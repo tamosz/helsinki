@@ -40,7 +40,7 @@ const App = () => {
     <div>
       <Header text={"Anecdote of the day"} />
       <Text text={anecdotes[selected]} />
-      <p>has {votes[selected]} votes</p>
+      <Text text={`has ${votes[selected]} votes`} />
       <Button text={"vote"} handleClick={() => {
         const shallowCopy = [...votes]
         shallowCopy[selected] += 1
@@ -49,8 +49,7 @@ const App = () => {
       <Button handleClick={() => {setSelected(getRandomIntInclusive(anecdotes.length - 1))}} text={"next anecdote"}/>
       <Header text={"Anecdote with most votes"} />
       <Text text={mostVotedAnecdote} />
-      <p>has {mostVotes} votes</p>
-      {/* can't seem to pass this info cleanly to the text component */}
+      <Text text={`has ${mostVotes} votes`}/>
     </div>
   )
 }
