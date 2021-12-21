@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Person from './components/Person'
 
 const App = () => {
@@ -10,6 +10,8 @@ const App = () => {
   ])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
+  const [searchTerm, setSearchTerm] = useState('')
+  const [searchResults, setSearchResults] = useState([]);
 
   const addPerson = (event) => {
     event.preventDefault()
@@ -38,10 +40,25 @@ const App = () => {
     setNewNumber(event.target.value) //event handler for new number
   }
 
+  const handleSearchTermChange = (event) => {
+    setSearchTerm(event.target.value) //event handler for search term
+  }
+
+   useEffect(() => {
+     const results = persons.filter(person =>
+       person.name.toLowerCase().includes(searchTerm))
+       setSearchResults(results)
+  }, [searchTerm])
+
   return (
     <div>
-      <div>debug: {newName}</div>
       <h2>Phonebook</h2>
+      <div>
+        filter shown with <input 
+        value = {searchTerm}
+        onChange = {handleSearchTermChange}/>
+      </div>
+      <h2>add a new</h2>
       <form onSubmit={addPerson}>
         <div>
           name: <input 
@@ -60,7 +77,7 @@ const App = () => {
       </form>
       <h2>Numbers</h2>
       <ul>
-      {persons.map(person => 
+      {searchResults.map(person => 
             <Person key={person.id} person={person} />
         )}
       </ul>
