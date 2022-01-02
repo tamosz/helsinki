@@ -1,44 +1,37 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
+import Content from './components/Content'
+import Filter from './components/Filter'
 
-
-function App() {
+const App = () => {
   const [countries, setCountries] = useState([])
-  const [searchTerm, setSearchTerm] = useState('')
-
-  const handleSearchTermChange = (event) =>{
-    setSearchTerm(event.target.value)
-  }
-
-  const countriesToShow = countries.filter(country => country.name.common.toLowerCase().includes(searchTerm.toLowerCase()))
-
+  const [allCountries, setAllCountries] = useState([])
+  const [newFilter, setNewFilter] = useState('')
 
   useEffect(() => {
     axios
-    .get("https://restcountries.com/v3.1/all")
-    .then(response => {
-      setCountries(response.data)
-    })
+      .get('https://restcountries.com/v3.1/all')
+      .then(response => {
+        console.log('promise fulfilled')
+        setAllCountries(response.data)
+      })
   }, [])
+
+  const handleFilterChange = (event) => {
+    setNewFilter(event.target.value)
+    if (newFilter) {
+      const regex = new RegExp( newFilter, 'i' );
+      const filteredCountries = () => allCountries.filter(country => country.name.common.match(regex))
+      setCountries(filteredCountries)
+    }
+  }
 
   return (
     <div>
-      find countries <input 
-       value={searchTerm}
-       onChange={handleSearchTermChange}/>
-      <div>
-        {countriesToShow.length < 9 &&
-        countriesToShow.map(country => 
-        <div>{country.name.common}</div>
-        )}
-        {countriesToShow.length >= 9 &&
-        <div>Too many results, please refine your search</div>}
-        {countriesToShow.length === 1 &&
-        countriesToShow.map(country =>
-        <div>{country.name.common}</div>)}
-      </div>
+      <Filter value={newFilter} onChange={handleFilterChange} />
+      <Content countries={countries} setCountries={setCountries} />
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
