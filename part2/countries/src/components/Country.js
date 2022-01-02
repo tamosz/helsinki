@@ -10,11 +10,11 @@ const Country = ({country}) => {
       query: country.capital
     }
 
-    axios.get(`api.openweathermap.org/data/2.5/weather?q=${params.query}&appid=${params.access_key}`)
+    axios.get(`http://api.openweathermap.org/data/2.5/weather?q=${params.query}&appid=${params.access_key}`)
       .then(response => {
         const apiResponse = response.data;
         console.log(apiResponse)
-        console.log(`Current temperature in ${apiResponse.location.name} is ${apiResponse.current.temperature}℃`);
+        console.log(`Current temperature in ${apiResponse.name} is ${apiResponse.main.temp} Kelvin`);
         setWeather([apiResponse])
       }).catch(error => {
         console.log(error);
@@ -22,7 +22,8 @@ const Country = ({country}) => {
   })
 
   if (weather.length > 0) {
-    const currentWeather = weather[0].current
+      console.log(weather[0])
+      const currentWeather = weather[0]
     return (
       <div>
         <h1>{country.name.common}</h1>
@@ -34,9 +35,8 @@ const Country = ({country}) => {
         </ul>
         <img src={country.flags.png} alt="Country flag"></img>
         <h2>Weather in {country.capital}</h2>
-        <p>temperature: {currentWeather.temperature}° Celcius</p>
-        <img src={currentWeather.weather_icons[0]} alt="Weather icon"></img>
-        <p>wind: {currentWeather.wind_speed} mph direction {currentWeather.wind_dir}</p>
+        <p>temperature: {currentWeather.main.temp}° Kelvin</p>
+        <p>wind: {currentWeather.wind.speed} mph direction {currentWeather.wind.deg}</p>
       </div>
     )
   }
