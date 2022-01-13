@@ -13,8 +13,6 @@ const Country = ({country}) => {
     axios.get(`http://api.openweathermap.org/data/2.5/weather?q=${params.query}&appid=${params.access_key}`)
       .then(response => {
         const apiResponse = response.data;
-        console.log(apiResponse)
-        console.log(`Current temperature in ${apiResponse.name} is ${apiResponse.main.temp} Kelvin`);
         setWeather([apiResponse])
       }).catch(error => {
         console.log(error);
@@ -22,7 +20,6 @@ const Country = ({country}) => {
   })
 
   if (weather.length > 0) {
-      console.log(weather[0])
       const currentWeather = weather[0]
     return (
       <div>

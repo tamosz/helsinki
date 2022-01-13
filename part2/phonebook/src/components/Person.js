@@ -1,8 +1,8 @@
 import React from 'react'
 
-const Person = ({ person }) => {
+const Person = ({ person, clickDelete }) => {
     return (
-        <li>{person.name} {person.number}</li>
+        <li>{person.name} {person.number} <button onClick={() => clickDelete(person)}>delete</button></li>
     )
 }
 
