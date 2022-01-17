@@ -2,20 +2,17 @@ import React, { useState, useEffect } from 'react'
 import Person from './components/Person'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
-import axios from 'axios'
 import personService from './services/backendCommunication'
+import Notification from './components/Notification'
+import './App.css'
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    // { name: 'Arto Hellas', number: '040-123456', id: 1 },
-    // { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
-    // { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
-    // { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
-  ])
+  const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [searchTerm, setSearchTerm] = useState('')
-  const [searchResults, setSearchResults] = useState([]);
+  const [searchResults, setSearchResults] = useState([])
+  const [notificationMessage, setNotificationMessage] = useState(null)
 
   useEffect(() => {
     personService
@@ -45,6 +42,10 @@ const App = () => {
           setSearchResults(persons.concat(response.data)) //live update
           setNewName('')
           setNewNumber('')
+          setNotificationMessage(`Added ${personObject.name}`)
+          setTimeout(() => {
+            setNotificationMessage(null)
+          }, 5000)
       })
     } else if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)){ 
       let oldObject = (persons.find(obj => obj.name === personObject.name))
@@ -52,6 +53,10 @@ const App = () => {
       personService
           .update(personObject.id, personObject)
           .then(response => {
+            setNotificationMessage(`${newName}'s number has been updated to ${newNumber}`)
+              setTimeout(() => {
+                setNotificationMessage(null)
+              }, 5000)
             setSearchResults(persons.map(person => person.id !== personObject.id ? person : response.data))
             setNewName('')
             setNewNumber('')
@@ -87,7 +92,8 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Filter onSearch={handleSearchTermChange} searchTerm={searchTerm}/>
+      <Notification message={notificationMessage} />
+      <Filter onSearch={handleSearchTermChange} searchTerm={searchTerm} />
       <h2>add a new</h2>
       <PersonForm 
         addPerson={addPerson} 
